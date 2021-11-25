@@ -9,8 +9,6 @@ add_library(${POS_INDEP_MTR} STATIC minitrace.c)
 
 set_property(TARGET ${POS_INDEP_MTR} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-message("mtr libs ${PROJECT_NAME} ${POS_INDEP_MTR}")
-
 set(BUILT_TARGETS ${PROJECT_NAME} ${POS_INDEP_MTR})
 
 option(MTR_ENABLED "Enable minitrace" ON)

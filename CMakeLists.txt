@@ -1,27 +1,33 @@
 cmake_minimum_required(VERSION 3.10)
 project(minitrace)
 
+option(OP_MINITRACE "Enable minitrace" ON)
+
+option(OP_MTR_CUSTOM_BUFFER_SIZE "Set events buffer to a custom size" ON)
+if(NOT DEFINED CUSTOM_MINITRACE_BUFFER_SIZE)
+  set(CUSTOM_MINITRACE_BUFFER_SIZE 2000)
+endif()
+
 add_library(${PROJECT_NAME} STATIC minitrace.c)
-add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 set(POS_INDEP_MTR ${PROJECT_NAME}_pos_indep)
 add_library(${POS_INDEP_MTR} STATIC minitrace.c)
-
 set_property(TARGET ${POS_INDEP_MTR} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-set(BUILT_TARGETS ${PROJECT_NAME} ${POS_INDEP_MTR})
+set(DISABLED_MTR ${PROJECT_NAME}_disabled)
+add_library(${DISABLED_MTR} INTERFACE)
+target_include_directories(${DISABLED_MTR} INTERFACE ${CMAKE_CURRENT_LIST_DIR})
 
-option(MTR_ENABLED "Enable minitrace" ON)
-option(MTR_CUSTOM_BUFFER_SIZE "Set the buffer size to a custom value" OFF)
+set(BUILT_TARGETS ${PROJECT_NAME} ${POS_INDEP_MTR})
 
 foreach(BUILT_TARGET IN LISTS BUILT_TARGETS)
 
   target_include_directories(${BUILT_TARGET} PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 
-  if(MTR_ENABLED)
+  if(OP_MINITRACE)
     target_compile_definitions(${BUILT_TARGET} PUBLIC MTR_ENABLED)
 
-    if(MTR_CUSTOM_BUFFER_SIZE)
+    if(OP_MTR_CUSTOM_BUFFER_SIZE)
       target_compile_definitions(${BUILT_TARGET}
 	PRIVATE INTERNAL_MINITRACE_BUFFER_SIZE=${CUSTOM_MINITRACE_BUFFER_SIZE}
       )

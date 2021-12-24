@@ -15,7 +15,7 @@ add_library(${POS_INDEP_MTR} STATIC minitrace.c)
 set_property(TARGET ${POS_INDEP_MTR} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 set(DISABLED_MTR ${PROJECT_NAME}_disabled)
-add_library(${DISABLED_MTR} INTERFACE)
+add_library(${DISABLED_MTR} INTERFACE minitrace.h)
 target_include_directories(${DISABLED_MTR} INTERFACE ${CMAKE_CURRENT_LIST_DIR})
 
 set(BUILT_TARGETS ${PROJECT_NAME} ${POS_INDEP_MTR})
